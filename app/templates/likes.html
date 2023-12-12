@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}Likes{% endblock %}
+
+{% block content %}
+
+    <h2>View Liked Products</h2>
+
+    <div class="product-container">
+        {% for product in liked_products %}
+            <div class="card">
+                <img src="../static/css/{{ product.picture.url }}" alt="{{ product.product_name }}" class="product-image">
+                <h1>{{ product.product_name }}</h1>
+                <p class="price">£{{ '%0.2f'|format(product.price|float) }}</p>
+                <p>
+                    <form method="post" action="/addtocart/{{ product.id }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+				        {{ csrf }}
+                        {% if product.stock.quantity_left > 0 and enable.get(product.id, True) %}
+                            <button class="addtocart-button" type="submit" aria-label="Add this item to cart"><i class="fas fa-shopping-cart"></i> Add</button>
+                        {% else %}
+                            <button class="addtocart-button" type="button" disabled aria-label="Out of Stock"><i class="fas fa-shopping-cart"></i> Out of Stock</button>
+                        {% endif %}
+                    </form>
+                </p>
+                <p>
+                    <br /><br />
+			        <div class="like-container" role="alert">
+				        {{ product.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if user.id in product.likes|map(attribute="account.id")|list %}
+				            <a class="vote" id="{{ product.id }}" aria-label="Unlike this product">
+					            <i class="fas fa-heart" id="{{ product.id }}"></i><span id="{{ product.id  }}"> {{ product.likes|length }}</span>
+                            </a>
+                        {% else %}
+                            <a class="vote" id="{{ product.id }}" aria-label="Like this product">
+                                <i class="far fa-heart" id="{{ product.id }}"></i><span id="{{ product.id  }}"> {{ product.likes|length }}</span>
+                            </a>
+                        {% endif %}
+			        </div>
+                </p>
+            </div> 
+        {% endfor %}
+    </div>
+
+{% endblock %}

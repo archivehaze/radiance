@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <table>
+        <thead> 
+            <tr>
+                <th>Image</th> 
+                <th>Product Name</th>   
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Delete?</th>
+            </tr> 
+        </thead>
+        <tbody> 
+        {% for item in items %}
+        <tr>
+            <td><img src="../static/css/{{ item.product.picture.url }}" alt="{{ item.product.product_name }}" class="product-image"></td>  
+            <td>{{ item.product.product_name }}</td>
+            <td>£{{ '%0.2f'|format(item.product.price|float) }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+                <form action="/deleteitem" method="post" class="delete-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+				    {{ csrf }}
+                    <input type="hidden" name="name" value="{{ item.id }}">
+                    <button class="delete-button" type="submit" aria-label="Delete this Item from cart.">Delete</button>
+                </form>
+           </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>Total</td>  
+            <td></td>
+            <td>£{{ '%0.2f'|format(total|float) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="order-container">
+        <form action="/order" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+			{{ csrf }}
+            <input type="hidden" name="name" value="{{ id }}">
+            <button class="order-button" type="submit" aria-label="Place an order."><i class="fas fa-check-circle"> Order</i></button>
+        </form>
+    </div>
+</div>
+{% endblock %}

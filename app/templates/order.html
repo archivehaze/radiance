@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block title %}Order{% endblock %}
+
+{% block content %}
+    <h2>Place Order</h2>
+
+    <div class="order-table-container">
+        <table>
+            <thead> 
+                <tr>
+                    <th>Product Name</th>   
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr> 
+            </thead>
+            <tbody> 
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>£{{ '%0.2f'|format(item.product.price|float) }}</td>
+                <td>{{ item.quantity }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>Total</td>  
+                <td>£{{ '%0.2f'|format(total|float) }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <div class="shipping-container">
+        <form action="" method="POST" name="Shipping Info" class="input-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+		    {{ csrf }}
+            {{ form.hidden_tag() }}
+            <p>
+                <label for="first_name">First Name: </label>
+                {{ form.first_name(type="text") }}<br> 
+                {% for error in form.first_name.errors %}
+                    [{{ error }}] 
+                {% endfor %}
+            </p>
+            <p>
+                <label for="last_name">Last Name: </label>
+                {{ form.last_name(type="text") }} 
+                {% for error in form.last_name.errors %}
+                    [{{ error }}] 
+                {% endfor %}
+            </p>
+            <p>
+                <label for="address_line1">Address Line 1: </label>
+                {{ form.address_line1(type="text") }}
+                {% for error in form.address_line1.errors %}
+                    [{{ error }}] 
+                {% endfor %}
+            </p>
+            <p>
+                <label for="city">City: </label><br>
+                {{ form.city(type="text") }}
+                {% for error in form.city.errors %}
+                    [{{ error }}] 
+                {% endfor %}
+            </p>
+            <p>
+                <label for="postcode">Postcode: </label>
+                {{ form.postcode(type="text") }} 
+                {% for error in form.postcode.errors %}
+                    [{{ error }}] 
+                {% endfor %}
+            </p>
+            <p> 
+                <input type="submit" value="Checkout" class="submit-button" id="checkout-button" aria-label="Submit Checkout Form">
+            </p> 
+        </form>
+    </div>
+{% endblock %}

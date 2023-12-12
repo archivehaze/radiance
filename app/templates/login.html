@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Radiance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/loginstyle.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+</head>
+
+<body>
+    <div class="logo">
+        <img src="static/css/logo.png" alt="Site Logo">
+    </div>
+    <div class="login">
+        <div class="links">
+            <a href="{{ url_for('login') }}" class="active" aria-label="Login">Login</a>
+            <a href="{{ url_for('register') }}" aria-label="Register">Register</a>
+        </div>
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+            {{ csrf }}
+            <label for="username">
+                <i class="fas fa-user" aria-hidden="true"></i>
+            </label>
+            <input type="text" name="username" placeholder="Username" id="username" required>
+            <label for="password">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+            </label>
+            <input type="password" name="password" placeholder="Password" id="password" required>
+            <div class="msg" aria-live="assertive">{{ msg }}</div>
+            <input type="submit" value="Login" aria-label="Submit Login">
+        </form>
+    </div>
+</body>
+
+</html>

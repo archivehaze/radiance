@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <table>
+        <thead> 
+            <tr>
+                <th>Image</th> 
+                <th>Product Name</th>   
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Delete?</th>
+            </tr> 
+        </thead>
+        <tbody> 
+        {% for product in products %}
+        <tr>
+            <td><img src="../static/css/{{ product.picture.url }}" alt="{{ product.product_name }}" class="product-image"></td>  
+            <td>{{ product.product_name }}</td>
+            <td>£{{ '%0.2f'|format(product.price|float) }}</td>
+            <td>
+                {{ product.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="stock" id="{{ product.id }}">
+                    <i class="fas fa-minus" id="minus"></i><span class="sstock" data-productid="{{ product.id }}" aria-label="Stock Quantity">{{ product.stock.quantity_left }}</span>
+                </a>
+                <a class="stock" id="{{ product.id }}">
+                    <i class="fas fa-plus" id="plus"></i>
+                </a>
+            </td>
+            <td>
+                <form action="/delete-product" method="post" class="delete-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+				    {{ csrf }}
+                    <input type="hidden" name="name" value="{{ product.id }}" aria-label="Product ID">
+                    <button class="delete-button" type="submit" aria-label="Delete this Product.">Delete</button>
+                </form>
+           </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+<div class="add-product-container">
+    <h3>Add Product</h3>
+    <br />
+    <form action="/add-product" method="post" class="add-product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token"/>
+        {{ csrf }}
+        {{ form.hidden_tag() }}
+        <p>
+            <label for="name">Product Name: </label>
+            {{ form.name(type="text") }}<br> 
+            {% for error in form.name.errors %}
+                [{{ error }}] 
+            {% endfor %}
+        </p>
+        <p>
+            <label for="price">Price: </label>
+            {{ form.price(type="number", step="0.01", min="0.01") }} 
+            {% for error in form.price.errors %}
+                [{{ error }}] 
+            {% endfor %}
+        </p>
+        <p>
+            <label for="url">Picture Url: </label>
+            {{ form.url(type="text") }}
+            {% for error in form.url.errors %}
+                [{{ error }}] 
+            {% endfor %}
+        </p>
+        <p>
+            <label for="quantity_left">Stock - Quantity Left: </label><br>
+            {{ form.quantity_left(type="number", step="1", min="0") }}
+            {% for error in form.quantity_left.errors %}
+                [{{ error }}] 
+            {% endfor %}
+        </p>
+        <p>
+            <input type="submit" value="Add Product" class="product-button" aria-label="Add Product Button">
+        </p> <!-- Submit button for adding the product -->
+    </form>
+</div>
+
+{% endblock %}
